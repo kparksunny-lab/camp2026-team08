@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ko" data-theme="forest">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>리매트(Re:Mat) — 08조 BLOCK ON CO.</title>
+<style>
+  :root{
+    --bg:#14281d; --fg:#f4fff8; --accent:#7cb518; --sub:#c3e8bd;
+    --font:"한컴 쿨재즈","나눔고딕","NanumGothic","맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  [data-theme="ocean"] { --bg:#0b2545; --fg:#ffffff; --accent:#5bc0eb; --sub:#a8dadc; }
+  [data-theme="forest"]{ --bg:#14281d; --fg:#f4fff8; --accent:#7cb518; --sub:#c3e8bd; }
+  [data-theme="sunset"]{ --bg:#3d1e2e; --fg:#fff5e1; --accent:#ff8c42; --sub:#ffd9a0; }
+  [data-theme="night"] { --bg:#12121c; --fg:#f0f0ff; --accent:#9b8cff; --sub:#c9c4e8; }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidden}
+
+  /* 은은한 그림 배경: PDF에서 꺼낸 배경 일러스트를 화면 전체에 깐다.
+     ♻ 장식(.bgdeco)과 장 내용(.slide)은 이 그림 위에 보여야 하므로
+     body 맨 처음에 두고 낮은 불투명도로 처리해 어떤 장에서도 글이 또렷이 읽힌다 */
+  .bgimg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;user-select:none;
+    background-image:url('assets/일러스트-1.png');
+    background-size:cover;background-position:center;background-repeat:no-repeat;
+    opacity:.15;
+  }
+
+  /* 배경 장식: 재활용 표시(♻)를 강조색(--accent, 초록) 글자로 화면 가장자리에 흩뿌린다.
+     가운데(제목·본문) 영역은 비워 두어 글이 잘 읽힌다.
+     글자 강제 표시(U+FE0E)와 글자용 글꼴을 함께 써서, 이모지 그림이 아니라
+     색이 입혀진 또렷한 장식 글자처럼 보이게 한다 */
+  .bgdeco{
+    position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+    font-family:"Segoe UI Symbol","Apple Symbols","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;
+    color:var(--accent);user-select:none;
+  }
+  .bgdeco .r{position:absolute;line-height:1;text-shadow:0 0 1.6vh currentColor}
+  .bgdeco .L{font-size:9.5vh;opacity:.20}   /* 모서리 큰 표시 */
+  .bgdeco .M{font-size:6vh;opacity:.13}     /* 가장자리 중간 표시 */
+  .bgdeco .S{font-size:3.6vh;opacity:.08}   /* 흐리게 흩뿌린 작은 표시 */
+
+  /* 자리와 기울기. translate(-50%,-50%) 로 글자 가운데를 기준으로 놓는다 */
+  .bgdeco .p1{ top:6vh;   left:6vw;    transform:translate(-50%,-50%) rotate(-14deg)}
+  .bgdeco .p2{ top:6vh;   left:94vw;   transform:translate(-50%,-50%) rotate(16deg)}
+  .bgdeco .p3{ top:91vh;  left:6vw;    transform:translate(-50%,-50%) rotate(10deg)}
+  .bgdeco .p4{ top:91vh;  left:94vw;   transform:translate(-50%,-50%) rotate(-18deg)}
+  .bgdeco .p5{ top:13vh;  left:23vw;   transform:translate(-50%,-50%) rotate(20deg)}
+  .bgdeco .p6{ top:12vh;  left:77vw;   transform:translate(-50%,-50%) rotate(-24deg)}
+  .bgdeco .p7{ top:87vh;  left:24vw;   transform:translate(-50%,-50%) rotate(-10deg)}
+  .bgdeco .p8{ top:86vh;  left:76vw;   transform:translate(-50%,-50%) rotate(15deg)}
+  .bgdeco .p9{ top:30vh;  left:1.5vw;  transform:translate(-50%,-50%) rotate(30deg)}
+  .bgdeco .p10{top:28vh;  left:98.5vw; transform:translate(-50%,-50%) rotate(-28deg)}
+  .bgdeco .p11{top:64vh;  left:1.5vw;  transform:translate(-50%,-50%) rotate(-16deg)}
+  .bgdeco .p12{top:66vh;  left:98.5vw; transform:translate(-50%,-50%) rotate(22deg)}
+  .bgdeco .p13{top:47vh;  left:.7vw;   transform:translate(-50%,-50%) rotate(8deg)}
+  .bgdeco .p14{top:46vh;  left:99vw;   transform:translate(-50%,-50%) rotate(-10deg)}
+  .bgdeco .p15{top:18vh;  left:13vw;   transform:translate(-50%,-50%) rotate(38deg)}
+  .bgdeco .p16{top:17vh;  left:87vw;   transform:translate(-50%,-50%) rotate(-34deg)}
+  .bgdeco .p17{top:82vh;  left:13vw;   transform:translate(-50%,-50%) rotate(-20deg)}
+  .bgdeco .p18{top:83vh;  left:87vw;   transform:translate(-50%,-50%) rotate(26deg)}
+  .bgdeco .p19{top:9vh;   left:42vw;   transform:translate(-50%,-50%) rotate(-6deg)}
+  .bgdeco .p20{top:9vh;   left:58vw;   transform:translate(-50%,-50%) rotate(7deg)}
+  .bgdeco .p21{top:92vh;  left:42vw;   transform:translate(-50%,-50%) rotate(-12deg)}
+  .bgdeco .p22{top:92vh;  left:58vw;   transform:translate(-50%,-50%) rotate(14deg)}
+  .bgdeco .p23{top:38vh;  left:4.5vw;  transform:translate(-50%,-50%) rotate(18deg)}
+  .bgdeco .p24{top:60vh;  left:4.5vw;  transform:translate(-50%,-50%) rotate(-22deg)}
+  .bgdeco .p25{top:40vh;  left:95.5vw; transform:translate(-50%,-50%) rotate(-15deg)}
+  .bgdeco .p26{top:62vh;  left:95.5vw; transform:translate(-50%,-50%) rotate(20deg)}
+
+  .slide{
+    position:absolute;inset:0;display:none;
+    flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:6vh 8vw;gap:2.4vh;
+  }
+  .slide.on{display:flex}
+  h1{font-size:7vh;line-height:1.2;color:var(--accent);font-weight:400;letter-spacing:-.01em}
+  h2{font-size:5vh;line-height:1.25;color:var(--accent);font-weight:400;letter-spacing:-.01em}
+  p,li{font-size:3.4vh;line-height:1.5;color:var(--fg)}
+  ul{text-align:left;max-width:80%}
+  li{margin:1vh 0}
+  .team{font-size:3vh;color:var(--sub)}
+  .media{max-width:70%;max-height:52vh;border-radius:1.6vh}
+  .hint{position:fixed;right:2vw;bottom:2vh;font-size:1.8vh;color:var(--sub);opacity:.7}
+  .page{position:fixed;left:2vw;bottom:2vh;font-size:1.8vh;color:var(--sub);opacity:.7}
+  /* 화면 아래 누르기 좋은 넘김 버튼 */
+  .navbtn{
+    position:fixed;bottom:7vh;width:9vh;height:9vh;z-index:40;
+    display:flex;align-items:center;justify-content:center;
+    font-size:4.6vh;line-height:1;border-radius:50%;
+    color:var(--bg);background:var(--accent);opacity:.9;
+    cursor:pointer;user-select:none;box-shadow:0 .6vh 2vh rgba(0,0,0,.35);
+  }
+  .navbtn:hover{opacity:1;transform:scale(1.06)}
+  .navbtn.prev{left:3vw}
+  .navbtn.next{right:3vw}
+</style>
+</head>
+<body>
+
+<!-- 은은한 그림 배경. 화면 전체를 덮지만 ♻ 장식과 장 내용보다 뒤에 있어 글을 가리지 않는다 -->
+<div class="bgimg" aria-hidden="true"></div>
+
+<!-- 배경 장식(재활용 표시). 화면 가장자리에만 있고 가운데 글은 가리지 않는다 -->
+<div class="bgdeco" aria-hidden="true">
+  <span class="r L p1">&#x267B;&#xFE0E;</span>
+  <span class="r L p2">&#x267B;&#xFE0E;</span>
+  <span class="r L p3">&#x267B;&#xFE0E;</span>
+  <span class="r L p4">&#x267B;&#xFE0E;</span>
+  <span class="r M p5">&#x267B;&#xFE0E;</span>
+  <span class="r M p6">&#x267B;&#xFE0E;</span>
+  <span class="r M p7">&#x267B;&#xFE0E;</span>
+  <span class="r M p8">&#x267B;&#xFE0E;</span>
+  <span class="r M p9">&#x267B;&#xFE0E;</span>
+  <span class="r M p10">&#x267B;&#xFE0E;</span>
+  <span class="r M p11">&#x267B;&#xFE0E;</span>
+  <span class="r M p12">&#x267B;&#xFE0E;</span>
+  <span class="r M p13">&#x267B;&#xFE0E;</span>
+  <span class="r M p14">&#x267B;&#xFE0E;</span>
+  <span class="r S p15">&#x267B;&#xFE0E;</span>
+  <span class="r S p16">&#x267B;&#xFE0E;</span>
+  <span class="r S p17">&#x267B;&#xFE0E;</span>
+  <span class="r S p18">&#x267B;&#xFE0E;</span>
+  <span class="r S p19">&#x267B;&#xFE0E;</span>
+  <span class="r S p20">&#x267B;&#xFE0E;</span>
+  <span class="r S p21">&#x267B;&#xFE0E;</span>
+  <span class="r S p22">&#x267B;&#xFE0E;</span>
+  <span class="r S p23">&#x267B;&#xFE0E;</span>
+  <span class="r S p24">&#x267B;&#xFE0E;</span>
+  <span class="r S p25">&#x267B;&#xFE0E;</span>
+  <span class="r S p26">&#x267B;&#xFE0E;</span>
+</div>
+
+<!-- 1. 표지 -->
+<section class="slide on">
+  <h1>리매트(Re:Mat)</h1>
+  <p><b>쓰레기를 치워주는 매트</b></p>
+  <p>지구를 지키는 일은 여러분에게서 시작됩니다</p>
+  <p class="team">08조 BLOCK ON CO.</p>
+</section>
+
+<!-- 2. 팀 소개 -->
+<section class="slide">
+  <h2>팀 소개</h2>
+  <p><b>BLOCK ON CO.</b></p>
+  <p>작은 아이디어를 하나씩 쌓아<br>새로운 가능성을 만들어 가는 팀이에요</p>
+  <p>블록을 연결해 작품을 완성하듯<br>서로의 생각을 모아 더 나은 결과를 만들어요</p>
+</section>
+
+<!-- 3. 우리가 찾은 문제 -->
+<section class="slide">
+  <h2>우리가 찾은 문제</h2>
+  <p>떨어진 쓰레기를 발견하지 못하고<br>그냥 지나치는 일이 많아요</p>
+  <p>바로 치우지 않으면 지저분해지고<br>밟거나 미끄러질 수 있어요</p>
+  <p><b>“바닥에 쓰레기가 떨어지는 순간<br>바로 알 수 있다면?”</b></p>
+</section>
+
+<!-- 4. 우리의 질문 -->
+<section class="slide">
+  <h2>우리의 질문</h2>
+  <p>우리가 어떻게 하면 길거리 쓰레기를 줄이고,<br>버려진 쓰레기를 다시 재활용할 수 있을까?</p>
+</section>
+
+<!-- 5. 우리의 캠페인 -->
+<section class="slide">
+  <h2>우리의 캠페인</h2>
+  <p><b>리매트(Re:Mat)</b></p>
+  <p>버려진 쓰레기를 자동으로 모아<br>새로운 제품으로 다시 태어나게 하는<br>AI 스마트 재활용 매트예요</p>
+</section>
+
+<!-- 6. 우리의 캠페인 - 동작 순서 -->
+<section class="slide">
+  <style>
+    /* 이 장에만: 설명 글은 왼쪽에 짧게, 매트 단면 그림은 오른쪽에 크게 */
+    .flow{display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);gap:4vmin;align-items:center;width:100%;max-width:170vh;flex:1;min-height:0}
+    .flow ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2vh;text-align:left}
+    .flow li{display:flex;align-items:center;gap:1.6vmin;margin:0;font-size:2.9vh;line-height:1.45;background:rgba(255,255,255,.06);border:.3vh solid rgba(255,255,255,.08);border-radius:1.4vh;padding:1.6vh 2vmin}
+    .flow li b{flex:none;display:inline-flex;align-items:center;justify-content:center;width:5vh;height:5vh;border-radius:50%;background:var(--accent);color:var(--bg);font-size:2.7vh}
+    .flow .pic{display:flex;align-items:center;justify-content:center;min-height:0}
+    .flow .pic img{display:block;width:auto;height:auto;max-width:100%;max-height:60vh;object-fit:contain;border-radius:2vh;box-shadow:0 1vh 3vh rgba(0,0,0,.3)}
+  </style>
+  <h2>이렇게 움직여요</h2>
+  <div class="flow">
+    <ul>
+      <li><b>1</b>쓰레기를 버리면 AI 센서가 감지해요</li>
+      <li><b>2</b>30분마다 구멍이 열려 아래로 내려가요</li>
+      <li><b>3</b>잘게 부수고 눌러서 작은 블록으로 만들어요</li>
+      <li><b>4</b>재활용 공장에서 장난감·필기구·생활용품으로 다시 태어나요</li>
+    </ul>
+    <div class="pic">
+      <img src="assets/그림-2.jpg" alt="리매트 매트 단면 그림">
+    </div>
+  </div>
+</section>
+
+<!-- 7. 우리의 캠페인 - 설치 장소와 좋은 점 -->
+<section class="slide">
+  <h2>설치 장소와 좋은 점</h2>
+  <p><b>설치 장소</b> : 학교 복도 · 급식실 · 지하철역 · 쇼핑몰 · 공원</p>
+  <p><b>좋은 점</b> : 알림으로 빠르게 처리 → 청소 시간과 인력 절약</p>
+  <p>사람들이 쓰레기를 함부로 버리지 않게 도와줘요</p>
+</section>
+
+<!-- 8. 우리가 만든 사진 -->
+<section class="slide">
+  <style>
+    /* 이 장에만 쓰는 그림 격자. 다른 장에는 영향이 없다 */
+    .gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:2.2vh;flex:1;min-height:0;width:100%;max-width:170vh}
+    .gal figure{margin:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:1.4vh;background:rgba(255,255,255,.05);border:.45vh solid var(--accent);border-radius:2vh}
+    .gal img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
+  </style>
+  <h2>우리가 만든 사진</h2>
+  <div class="gal">
+    <figure><img src="assets/사진-1.png" alt="우리가 만든 그림"></figure>
+    <figure><img src="assets/사진-2.png" alt="우리가 만든 그림"></figure>
+    <figure><img src="assets/사진-3.png" alt="우리가 만든 그림"></figure>
+    <figure><img src="assets/사진-4.png" alt="우리가 만든 그림"></figure>
+  </div>
+</section>
+
+<!-- 9. 이렇게 실천해요 -->
+<section class="slide">
+  <h2>이렇게 실천해요</h2>
+  <ul>
+    <li>길에서 쓰레기를 발견하면 바로 주워요</li>
+    <li>쓰레기는 꼭 쓰레기통에 버려요</li>
+    <li>재활용을 생활 속에서 실천해요</li>
+  </ul>
+</section>
+
+<!-- 10. 우리 팀 -->
+<section class="slide">
+  <h2>우리 팀</h2>
+  <p><b>08조 BLOCK ON CO.</b></p>
+  <p>들어 주셔서 고맙습니다!</p>
+  <p>환경을 지키는 여러분이 됩시다!!</p>
+</section>
+
+<!-- 여기에 친구들 슬라이드가 들어갑니다 (합쳐줘 를 쓰면 아래에 채워져요) -->
+
+<div class="page"><span id="now">1</span> / <span id="all">10</span></div>
+<div class="hint">← → 눌러서 넘기기</div>
+<div class="navbtn prev" aria-label="이전 장">&#10094;</div>
+<div class="navbtn next" aria-label="다음 장">&#10095;</div>
+
+<!-- 움직임 라이브러리. 없어도 발표자료는 그대로 보인다 -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var i = 0;
+  document.getElementById('all').textContent = slides.length;
+
+  // 움직임을 불편해하는 사람을 위한 설정을 존중한다
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 장이 나타날 때 안쪽 요소가 아래에서 살짝 올라온다.
+  // GSAP 이 없거나(CDN 실패) 사용자가 움직임을 껐으면 그냥 보여준다.
+  // 무슨 일이 있어도 글은 보여야 한다. 인라인 스타일을 지워 원래 모습으로 돌린다.
+  function 무조건보이기(items){
+    for (var k = 0; k < items.length; k++) {
+      items[k].style.opacity = '';
+      items[k].style.transform = '';
+      items[k].style.translate = '';
+      items[k].style.rotate = '';
+      items[k].style.scale = '';
+    }
+  }
+
+  function animateIn(slide){
+    var items = slide.children;
+
+    // 움직임을 껐거나, CDN 이 실패했거나, 화면에 안 보이는 탭이면 그냥 보여준다.
+    // (안 보이는 탭에서는 브라우저가 애니메이션을 멈춰서 opacity 0 으로 굳는다)
+    if (reduceMotion || !window.gsap || document.hidden) {
+      무조건보이기(items);
+      return;
+    }
+
+    gsap.killTweensOf(items);
+    gsap.fromTo(items,
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.45, stagger: 0.08, ease: 'power2.out', clearProps: 'all' }
+    );
+
+    // 마지막 안전망: 1.2초 뒤에도 아직 투명하면 애니메이션을 포기하고 보여준다.
+    // 발표 중에 글이 안 보이는 것보다 움직임이 없는 게 낫다.
+    clearTimeout(slide.__safety);
+    slide.__safety = setTimeout(function(){
+      if (items.length && getComputedStyle(items[0]).opacity !== '1') {
+        gsap.killTweensOf(items);
+        무조건보이기(items);
+      }
+    }, 1200);
+  }
+
+  // 탭으로 돌아왔을 때 굳어 있으면 풀어 준다
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) { animateIn(slides[i]); }
+  });
+
+  function show(n){
+    if (n < 0) n = 0;
+    if (n > slides.length - 1) n = slides.length - 1;
+    slides[i].classList.remove('on');
+    i = n;
+    slides[i].classList.add('on');
+    document.getElementById('now').textContent = i + 1;
+    animateIn(slides[i]);
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(i+1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                   { show(i-1); }
+    if (e.key === 'Home') { show(0); }
+    if (e.key === 'End')  { show(slides.length-1); }
+  });
+  document.addEventListener('click', function(e){
+    // 화살표 버튼을 누르면 그 방향으로만 넘긴다
+    if (e.target.closest && e.target.closest('.navbtn')) return;
+    show(e.clientX < window.innerWidth/3 ? i-1 : i+1);
+  });
+
+  // 화면의 ◀ ▶ 버튼
+  var prevBtn = document.querySelector('.navbtn.prev');
+  var nextBtn = document.querySelector('.navbtn.next');
+  if (prevBtn) prevBtn.addEventListener('click', function(){ show(i-1); });
+  if (nextBtn) nextBtn.addEventListener('click', function(){ show(i+1); });
+
+  // 핸드폰에서 손가락으로 밀어서 넘기기
+  var touchX = null;
+  document.addEventListener('touchstart', function(e){
+    touchX = e.changedTouches[0].clientX;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (dx > 50)      { show(i-1); }  // 오른쪽으로 밀면 이전 장
+    else if (dx < -50){ show(i+1); }  // 왼쪽으로 밀면 다음 장
+  }, {passive:true});
+
+  // 첫 장에도 등장 애니메이션을 걸어 준다.
+  // CDN 이 늦게 도착할 수 있으니 load 까지 기다린다.
+  if (document.readyState === 'complete') { animateIn(slides[0]); }
+  else { window.addEventListener('load', function(){ animateIn(slides[0]); }); }
+})();
+</script>
+</body>
+</html>
